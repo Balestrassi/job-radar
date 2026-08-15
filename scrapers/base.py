@@ -1,7 +1,7 @@
 
 from abc import ABC, abstractmethod
 
-from job import Job
+from core.job import Job
 
 
 class BaseScraper(ABC):

@@ -5,8 +5,8 @@ from urllib.parse import quote_plus, urlparse
 
 from playwright.sync_api import sync_playwright, TimeoutError as PlaywrightTimeoutError
 
-from job import Job, extrair_data_publicacao
-from logger import get_logger
+from core.job import Job, extrair_data_publicacao
+from core.logger import get_logger
 from scrapers.base import BaseScraper
 
 logger = get_logger()

@@ -4,9 +4,9 @@ from urllib.parse import quote_plus
 
 from playwright.sync_api import sync_playwright
 
-from config import LOCATIONS_LINKEDIN, LOCATIONS_LINKEDIN_REMOTO_APENAS
-from job import Job, _e_remoto, _normalizar, extrair_data_publicacao
-from logger import get_logger
+from core.config import LOCATIONS_LINKEDIN, LOCATIONS_LINKEDIN_REMOTO_APENAS
+from core.job import Job, _e_remoto, _normalizar, extrair_data_publicacao
+from core.logger import get_logger
 from scrapers.base import BaseScraper
 
 logger = get_logger()

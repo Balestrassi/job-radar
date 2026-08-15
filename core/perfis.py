@@ -18,7 +18,7 @@ jobs.db).
 
 from dataclasses import dataclass, field
 
-from config import (
+from core.config import (
     KEYWORDS,
     KEYWORDS_CARGO_FORTE,
     KEYWORDS_CARGO_AMBIGUO,
@@ -32,7 +32,7 @@ from config import (
     TERMOS_BUSCA,
     TERMOS_POR_CICLO,
 )
-from config_intl import (
+from core.config_intl import (
     KEYWORDS_INTL,
     TERMOS_BUSCA_INTL,
     TERMOS_POR_CICLO_INTL,
@@ -43,7 +43,7 @@ from config_intl import (
     MERCADOS_REMOTO_ACEITOS_INTL,
     IDIOMAS_EXIGIDOS_INTL,
 )
-from job import RegrasFiltro
+from core.job import RegrasFiltro
 from scrapers.catho import CathoScraper
 from scrapers.geekhunter import GeekHunterScraper
 from scrapers.gupy import GupyScraper

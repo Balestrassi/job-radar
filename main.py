@@ -6,7 +6,7 @@ from collections import Counter
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from datetime import date, datetime, timezone
 
-from config import DIGEST_HORA_UTC, INTERVALO_MINUTOS, LIMIAR_DIGEST_IMEDIATO
+from core.config import DIGEST_HORA_UTC, INTERVALO_MINUTOS, LIMIAR_DIGEST_IMEDIATO
 from database.database import (
     BancoVazioSuspeito,
     definir_metadado,
@@ -24,9 +24,9 @@ from notifier.telegram import (
     notificar_vaga_exploratoria,
     processar_feedback_pendente,
 )
-from perfis import FREQUENCIA_ALTA, PERFIS, Perfil
+from core.perfis import FREQUENCIA_ALTA, PERFIS, Perfil
 from utils.filtro import filtrar_vagas
-from logger import get_logger
+from core.logger import get_logger
 
 logger = get_logger()
 

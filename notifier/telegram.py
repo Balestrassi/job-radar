@@ -3,9 +3,9 @@ import json
 
 import requests
 
-from config import TELEGRAM_BOT_TOKEN, TELEGRAM_CHAT_ID
+from core.config import TELEGRAM_BOT_TOKEN, TELEGRAM_CHAT_ID
 from database.database import definir_feedback, definir_metadado, obter_metadado
-from logger import get_logger
+from core.logger import get_logger
 
 logger = get_logger()
 

@@ -1,7 +1,7 @@
 
 from collections import Counter
 
-from job import Job, RegrasFiltro
+from core.job import Job, RegrasFiltro
 
 
 def filtrar_vagas(vagas: list[Job], regras: RegrasFiltro) -> tuple[list[Job], Counter]:

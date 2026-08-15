@@ -33,7 +33,7 @@ import sqlite3
 from collections import defaultdict
 from datetime import datetime
 
-from config import DB_PATH
+from core.config import DB_PATH
 from database.database import iniciar_db
 
 

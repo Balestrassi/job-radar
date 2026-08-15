@@ -3,8 +3,8 @@ import sqlite3
 import os
 from contextlib import contextmanager
 
-from config import DB_PATH
-from job import _normalizar
+from core.config import DB_PATH
+from core.job import _normalizar
 
 
 def _garantir_pasta():

@@ -3,8 +3,8 @@ import time
 
 from playwright.sync_api import sync_playwright
 
-from job import Job, extrair_data_publicacao
-from logger import get_logger
+from core.job import Job, extrair_data_publicacao
+from core.logger import get_logger
 from scrapers.base import BaseScraper
 
 logger = get_logger()

@@ -9,7 +9,7 @@
 # principal (reaproveita o bot já configurado, e o dedup por link no mesmo
 # jobs.db não tem risco de colisão — o id é hash do link, e vaga
 # internacional nunca vai ter o mesmo link de uma vaga brasileira).
-from config import TELEGRAM_BOT_TOKEN, TELEGRAM_CHAT_ID, DB_PATH, CIDADES_EUROPA_IBERICA  # noqa: F401
+from core.config import TELEGRAM_BOT_TOKEN, TELEGRAM_CHAT_ID, DB_PATH, CIDADES_EUROPA_IBERICA  # noqa: F401
 
 # Cargo em múltiplos idiomas — vaga internacional pode ter o anúncio escrito
 # em inglês, português ou espanhol, dependendo de quem contratou.
