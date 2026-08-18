@@ -227,6 +227,14 @@ class LinkedInScraper(BaseScraper):
                                 site="LinkedIn",
                                 publicado_em=publicado_em,
                                 modalidade=modalidade,
+                                # f_WT=2 (remoto=True) é filtro NATIVO do
+                                # LinkedIn, sem confirmação própria no texto
+                                # — ver MEDIDO em core/job.py
+                                # (_modalidade_pelo_texto) sobre esse filtro
+                                # devolver vaga presencial/híbrida de
+                                # verdade. Passada nacional (remoto=False)
+                                # já é confirmada organicamente (_e_remoto).
+                                modalidade_confirmada=not remoto,
                             ))
                         except Exception as e:
                             logger.warning(f"[LinkedIn] Erro ao processar card: {e}")

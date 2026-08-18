@@ -71,28 +71,54 @@ def _e_remoto(texto: str) -> bool:
     return any(termo in texto for termo in TERMOS_REMOTO)
 
 
-# Vocabulário que, no TÍTULO da vaga, contradiz "remoto" — usado pra não
-# confiar cegamente em fonte com filtro nativo de remoto (f_WT=2 do
-# LinkedIn) quando ela diverge do próprio anúncio. MEDIDO em produção: 1
-# de 81 vagas internacionais veio com modalidade=Remoto (via f_WT=2, o
-# LinkedIn classificou como remota) mas o título dizia "Data Analyst
-# (Analista de Datos) - Hybrid" — o filtro do próprio LinkedIn às vezes
-# diverge do anúncio real. Como o perfil internacional só quer remoto de
-# verdade, o título vence quando contradiz a classificação da fonte.
-_TERMOS_TITULO_HIBRIDO = ["hybrid", "hibrido"]
-_TERMOS_TITULO_PRESENCIAL = ["on-site", "onsite", "on site", "presencial"]
+# Vocabulário que, no TEXTO da vaga (título OU descrição completa),
+# contradiz "remoto" — usado pra não confiar cegamente em fonte com filtro
+# nativo de remoto (f_WT=2 do LinkedIn, filtro nativo do Indeed Intl)
+# quando ela diverge do próprio anúncio.
+#
+# MEDIDO ao vivo (2026-08-18): duas vagas reais retornadas pela passada
+# f_WT=2 do LinkedIn NÃO eram remotas de verdade, e nenhuma das duas tinha
+# contradição no TÍTULO — só no corpo do anúncio: "Analista de Suporte
+# Pleno" (GAV Resorts, Goiânia — presencial, sem nenhuma palavra de
+# modalidade em lugar nenhum da página) e "Helpdesk Analyst" (SolarWinds,
+# Cork — descrição diz literalmente "hands-on, office-based part of the
+# week", ou seja, híbrida). Isso confirma o mesmo problema já documentado
+# pro caso "1 de 81" (só que bem mais frequente do que aquela amostra
+# sugeria) e mostra que checar só o título não é suficiente — por isso a
+# mesma lista agora serve tanto pra título (grátis, sempre) quanto pra
+# descrição completa (só quando a fonte não confirma modalidade sozinha —
+# ver Job.modalidade_confirmada e utils/verificacao_modalidade.py, que
+# abre a página da vaga só nesses casos).
+#
+# Limitação conhecida e aceita: isso é substring simples, sem entender
+# negação — "trabalho não presencial" (uma vaga remota se reafirmando)
+# também bate em "presencial" e seria marcada errado. Compromisso
+# deliberado: melhor arriscar rejeitar uma vaga remota rara escrita assim
+# do que deixar passar vaga presencial disfarçada de remota, que é o
+# problema medido e mais frequente.
+_TERMOS_HIBRIDO = ["hybrid", "híbrido", "hibrido"]
+_TERMOS_PRESENCIAL = [
+    "on-site", "onsite", "on site", "presencial", "presencialmente",
+    "in office", "in-office", "office-based", "in person", "in-person",
+    "no escritório",
+]
 
 
-def _modalidade_pelo_titulo(titulo: str) -> str | None:
-    """Devolve a modalidade real quando o TÍTULO contradiz "remoto"
-    (Híbrido/Presencial) — None quando o título não contradiz nada (a
-    classificação da fonte permanece confiável)."""
-    titulo_norm = _normalizar(titulo)
-    if any(termo in titulo_norm for termo in _TERMOS_TITULO_HIBRIDO):
+def _modalidade_pelo_texto(texto: str) -> str | None:
+    """Devolve a modalidade real quando o TEXTO (título ou descrição
+    completa) contradiz "remoto" (Híbrido/Presencial) — None quando não
+    contradiz nada (a classificação da fonte permanece confiável)."""
+    texto_norm = _normalizar(texto)
+    if any(termo in texto_norm for termo in _TERMOS_HIBRIDO):
         return "Híbrido"
-    if any(termo in titulo_norm for termo in _TERMOS_TITULO_PRESENCIAL):
+    if any(termo in texto_norm for termo in _TERMOS_PRESENCIAL):
         return "Presencial"
     return None
+
+
+# Nome antigo mantido como alias — título é só mais um texto pra essa
+# checagem, não precisa de função própria (usado em Job.__post_init__).
+_modalidade_pelo_titulo = _modalidade_pelo_texto
 
 
 _FLAGS_REMOTO = ("remoto", "remota", "remote")
@@ -938,6 +964,17 @@ class Job:
     # `local` só com informação de localização de verdade. Valores usados:
     # "Remoto", "Híbrido", "Presencial", ou "" quando a fonte não expõe.
     modalidade: str = ""
+    # False quando `modalidade="Remoto"` veio de um filtro NATIVO da fonte
+    # (f_WT=2 do LinkedIn, filtro nativo do Indeed Intl) sem nenhuma
+    # confirmação própria no texto — esses filtros às vezes divergem do
+    # anúncio real (ver MEDIDO em _modalidade_pelo_texto). True (default)
+    # pra qualquer outro caso, incluindo quando modalidade foi detectada
+    # organicamente no texto de `local` (_e_remoto) ou quando a fonte não
+    # tem filtro nativo nenhum. Usado por
+    # utils/verificacao_modalidade.filtrar_por_modalidade_real pra saber
+    # quais vagas valem a pena abrir a página completa e reconferir —
+    # abrir TODAS seria caro demais (ver custo documentado lá).
+    modalidade_confirmada: bool = True
     # MEDIDO: WeWorkRemotelyIntlScraper preenche `local` com a SEDE da
     # empresa (".new-listing__company-headquarters"), não o mercado onde a
     # vaga contrata — o site é 100% remoto por definição, sede não diz nada

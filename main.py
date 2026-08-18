@@ -26,6 +26,7 @@ from notifier.telegram import (
 )
 from core.perfis import FREQUENCIA_ALTA, PERFIS, Perfil
 from utils.filtro import filtrar_vagas
+from utils.verificacao_modalidade import filtrar_por_modalidade_real
 from core.logger import get_logger
 
 logger = get_logger()
@@ -225,6 +226,7 @@ def ciclo_de_busca(perfil: Perfil):
     total_filtradas = 0
     scrapers_com_problema = []
     descartes_escopo_ciclo: Counter = Counter()
+    descartes_modalidade_ciclo = 0
 
     termos_do_ciclo = _proximo_bloco_termos(perfil)
     logger.info(
@@ -278,6 +280,16 @@ def ciclo_de_busca(perfil: Perfil):
                 candidatas, descartes_secundario = filtrar_vagas(vagas, perfil.regras_eixo_secundario)
                 descartes_escopo_ciclo.update(descartes_secundario)
                 vagas_secundarias = [v for v in candidatas if v.id not in ids_filtradas]
+
+            # Segunda checagem: filtro nativo de remoto (f_WT=2 do LinkedIn,
+            # filtro nativo do Indeed Intl) às vezes diverge do anúncio real
+            # (ver MEDIDO em core/job.py) — abre a página completa só das
+            # vagas com modalidade_confirmada=False (já filtradas por
+            # cargo/cidade/mercado acima, então o volume é pequeno) e
+            # descarta quem a descrição contradiz.
+            vagas_filtradas, descartadas_modalidade = filtrar_por_modalidade_real(vagas_filtradas)
+            vagas_secundarias, descartadas_modalidade_sec = filtrar_por_modalidade_real(vagas_secundarias)
+            descartes_modalidade_ciclo += descartadas_modalidade + descartadas_modalidade_sec
 
             total_filtradas += len(vagas_filtradas) + len(vagas_secundarias)
 
@@ -383,6 +395,16 @@ def ciclo_de_busca(perfil: Perfil):
             f"{escopo} ({n})" for escopo, n in descartes_escopo_ciclo.most_common()
         )
         logger.info(f"[{perfil.nome}] Descarte por escopo: {detalhe}")
+
+    # Idem, pra vaga que passou no filtro de cargo/cidade/mercado mas foi
+    # descartada na segunda checagem (página completa contradisse a
+    # modalidade "Remoto" que o filtro nativo da fonte alegava) — ver
+    # utils/verificacao_modalidade.py.
+    if descartes_modalidade_ciclo:
+        logger.info(
+            f"[{perfil.nome}] Descarte por modalidade divergente (filtro nativo "
+            f"da fonte dizia Remoto, descrição contradisse): {descartes_modalidade_ciclo}"
+        )
 
     # Alerta de saúde: se a maioria das fontes falhou/voltou vazia, avisa no
     # Telegram. Sem isso, um bloqueio geral ou mudança de layout passaria

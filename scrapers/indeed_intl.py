@@ -138,6 +138,10 @@ class IndeedIntlScraper(BaseScraper):
                                 publicado_em=publicado_em,
                                 site=f"Indeed Internacional ({pais})",
                                 modalidade=modalidade,
+                                # Mesmo motivo do f_WT=2 no LinkedIn: filtro
+                                # nativo do Indeed, sem confirmação própria
+                                # no texto — ver MEDIDO em core/job.py.
+                                modalidade_confirmada=not usa_filtro_nativo,
                             ))
                         except Exception as e:
                             logger.warning(f"[Indeed Intl] Erro ao processar card: {e}")

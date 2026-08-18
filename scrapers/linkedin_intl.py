@@ -135,6 +135,9 @@ class LinkedInIntlScraper(BaseScraper):
                                 site="LinkedIn Internacional",
                                 publicado_em=publicado_em,
                                 modalidade=modalidade,
+                                # Mesmo motivo do scrapers/linkedin.py: f_WT=2
+                                # é filtro nativo, sem confirmação própria.
+                                modalidade_confirmada=not remoto,
                             ))
                         except Exception as e:
                             logger.warning(f"[LinkedIn Intl] Erro ao processar card: {e}")
