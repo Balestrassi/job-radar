@@ -48,19 +48,17 @@ KEYWORDS_CARGO_FORTE = [
     "SAP Support Analyst",
     "Oracle Fusion Support Analyst",
     "ERP Analyst",
-    # "Analista de Suporte" saiu da lista ambígua por pedido explícito do
-    # usuário: mesmo sem qualificador junto (ex: "TI"/"técnico"), ele quer
-    # ver essa vaga — aceita direto, sem exigir contexto adicional no
-    # título.
-    "Analista de Suporte",
 ]
 
 # Cargo ambíguo: título que também é usado em vaga sem nada a ver com
-# suporte técnico/ERP (ex: "Suporte" sozinho existe em suporte comercial,
-# RH, vendas... qualquer área; "Analista Fiscal" existe em contabilidade
-# pura, sem nada de sistemas). Só conta como match se o título TAMBÉM
-# tiver um QUALIFICADORES_DADOS junto.
+# suporte técnico/ERP (ex: "Analista de Suporte"/"Suporte" sozinho existe
+# em suporte comercial, RH, vendas... qualquer área; "Analista Fiscal"
+# existe em contabilidade pura, sem nada de sistemas). Só conta como match
+# se o título TAMBÉM tiver um QUALIFICADORES_DADOS junto — pedido explícito
+# do usuário pra "Analista de Suporte" voltar a exigir isso (já testou os
+# dois lados: sem exigência estava vindo vaga demais fora do alvo).
 KEYWORDS_CARGO_AMBIGUO = [
+    "Analista de Suporte",
     "Suporte",
     "Analista de Sistemas",
     "Analista Fiscal",
