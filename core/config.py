@@ -300,11 +300,25 @@ INTERVALO_MINUTOS = int(os.getenv("INTERVALO_MINUTOS", 180))
 # praticamente tudo, quase nenhuma vaga "excelente" se destacando na hora).
 LIMIAR_DIGEST_IMEDIATO = 7
 
-# Hora UTC em que o digest diário dispara (uma vez por perfil, por dia —
-# ver _enviar_digest_diario). 0 = meia-noite UTC = 21h em Brasília (UTC-3).
-# O cron do workflow (0 */3 * * *) já passa por essa hora exata todo dia,
-# então não precisa de agendamento à parte.
-DIGEST_HORA_UTC = 0
+# Hora UTC a partir da qual o digest diário pode sair (uma vez por perfil,
+# por dia — ver _enviar_digest_diario em main.py). A regra é "ainda não
+# enviei hoje E já passou desta hora", então o digest sai no PRIMEIRO ciclo
+# do dia UTC que TERMINAR depois dela — não numa janela exata de 1 hora,
+# que era o que impedia o disparo de acontecer (o ciclo dura ~80 min e
+# nunca terminava dentro da janela).
+#
+# 9 UTC: o ciclo que começa às 09:00 UTC termina por volta das 10:20 UTC =
+# 07:20 em Brasília (UTC-3). Escolhido pela usuária: chega de manhã, com a
+# lista do dia anterior pronta pra revisar, em vez de de madrugada.
+#
+# Era 0 (= ~22h20 de Brasília), mas esse valor nunca foi uma escolha de
+# verdade — ficou assim desde que o recurso foi escrito e nunca chegou a
+# funcionar, então nunca houve como perceber que horário dava na prática.
+#
+# Se o ciclo das 09:00 falhar num dia, o das 12:00 (13:20 UTC) manda — a
+# regra é "já passou de 9", não "é exatamente 9", então qualquer ciclo
+# seguinte do mesmo dia UTC serve de recuperação.
+DIGEST_HORA_UTC = 9
 
 TELEGRAM_BOT_TOKEN = os.getenv("TELEGRAM_BOT_TOKEN", "")
 TELEGRAM_CHAT_ID = os.getenv("TELEGRAM_CHAT_ID", "")
