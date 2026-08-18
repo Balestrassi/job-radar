@@ -159,6 +159,15 @@ _MERCADOS_REMOTO = {
     "canada": "Canadá",
     "germany": "Alemanha",
     "alemanha": "Alemanha",
+    # Anglosfera adicional (perfil aceita remoto de qualquer país de língua
+    # inglesa, ver MERCADOS_REMOTO_ACEITOS em config.py).
+    "ireland": "Irlanda",
+    "irlanda": "Irlanda",
+    "australia": "Austrália",
+    "new zealand": "Nova Zelândia",
+    "nova zelandia": "Nova Zelândia",
+    "south africa": "África do Sul",
+    "africa do sul": "África do Sul",
     "latam": "LATAM",
     "latin america": "LATAM",
     "america latina": "LATAM",

@@ -41,7 +41,6 @@ from core.config_intl import (
     CIDADES_INTL,
     ATIVAR_EIXO_IBERICO,
     MERCADOS_REMOTO_ACEITOS_INTL,
-    IDIOMAS_EXIGIDOS_INTL,
 )
 from core.job import RegrasFiltro
 from scrapers.catho import CathoScraper
@@ -178,13 +177,18 @@ PERFIL_BR = Perfil(
 
 
 # Regra primária: só remoto ("Remote"/"Remoto" em CIDADES_INTL), mercado
-# LATAM/Portugal/Espanha aceito. Sem cargo ambíguo/ferramenta ainda nesse
-# perfil — simples de propósito por ser o mais novo dos dois.
+# anglófono/lusófono aceito (MERCADOS_REMOTO_ACEITOS_INTL). Sem cargo
+# ambíguo/ferramenta nesse perfil — mesma regra de config.py exigiria
+# duplicar QUALIFICADORES_DADOS/FERRAMENTAS_TITULO aqui, e o cargo já é
+# suficientemente específico (Support/Service Desk/Integration Analyst)
+# pra não precisar de qualificador extra.
 #
-# idiomas_exigidos: sem mercado declarado, exige espanhol/português/LATAM
-# no título (ver IDIOMAS_EXIGIDOS_INTL e comentário em RegrasFiltro) — a
-# busca já tentava garantir isso via termo, mas nunca era reconferido na
-# vaga em si.
+# idiomas_exigidos=None (default): diferente do requisito antigo
+# (espanhol/português precisava aparecer no título, sinal real de mercado
+# hispanofalante que raramente se anuncia em inglês) — aqui o próprio país
+# de LOCATIONS_INTL já é o filtro de idioma na busca, e vaga remota SEM
+# mercado declarado no texto não costuma repetir "English"/"Portuguese" no
+# título mesmo sendo válida. Exigir a palavra rejeitaria vaga boa à toa.
 _REGRAS_INTL = RegrasFiltro(
     keywords_forte=KEYWORDS_INTL,
     keywords_ambiguo=[],
@@ -193,7 +197,6 @@ _REGRAS_INTL = RegrasFiltro(
     qualificadores_cargo=[],
     cidades=CIDADES_INTL,
     mercados_remoto_aceitos=MERCADOS_REMOTO_ACEITOS_INTL,
-    idiomas_exigidos=IDIOMAS_EXIGIDOS_INTL,
 )
 
 # Eixo secundário (Ibéria): vaga presencial/híbrida em Portugal/Espanha,

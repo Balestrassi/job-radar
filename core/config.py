@@ -4,92 +4,134 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-# Cargo forte: título que só existe mesmo em vaga de dados/BI, sem
-# possibilidade real de ser outra área.
+# Perfil configurado para Victor Balestrassi: Analista de Suporte Técnico
+# N2, com atuação em integração de sistemas fiscais e ERP (Oracle Fusion
+# AP, SAP, Oracle APEX, PL/SQL, NF-e/NFS-e/CT-e). Só interessa vaga REMOTA
+# (qualquer cidade, ver CIDADES abaixo) em país que fale português ou
+# inglês (ver MERCADOS_REMOTO_ACEITOS).
+
+# Cargo forte: título que só existe mesmo em vaga de suporte técnico/
+# integração de sistemas, sem possibilidade real de ser outra área.
 KEYWORDS_CARGO_FORTE = [
-    "Analista de Dados",
-    "Analista BI",
-    "Analista de BI",
-    "Business Intelligence",
-    "Data Analytics",
-    "Analista de Analytics",
-    "Data Analyst",
-    "Desenvolvedor BI",
-    "Consultor BI",
-    "Analista de Inteligência de Negócios",
-    "BI Developer",
-    "BI Analyst",
-    "Analista de Reporting",
-    "Analista de Inteligência de Mercado",
-    "Analista de Indicadores",
-    "Reporting Analyst",
-    "Insights Analyst",
-    "Data Insights Analyst",
-    "MIS Analyst",
-    "Analista de MIS",
-    "Assistente de BI",
-    "Auxiliar de BI",
-    "Analista de Inteligência Comercial",
-    "Data Specialist",
-    "Data Quality Analyst",
-    "Data Intelligence Analyst",
-    "BI & Analytics Analyst",
-    "Analytics Specialist",
-    "Especialista em Dados",
-    "Analista de Planejamento e Dados",
-    # "Datos" (espanhol) não é "Dados" (português) — nenhuma keyword em
-    # português cobre título em espanhol, mesmo sendo a mesma vaga. Faz
-    # sentido aqui no pipeline BR (não só em config_intl.py) porque
-    # LinkedInScraper já busca em Argentina/Chile (ver LOCATIONS_LINKEDIN).
-    "Analista de Datos",
-    "Analítica de Datos",
+    "Analista de Suporte Técnico N2",
+    "Analista de Suporte N2",
+    "Analista de Suporte Nível 2",
+    "Analista de Suporte Técnico Nível 2",
+    "Suporte Técnico N2",
+    "Suporte N2",
+    "Suporte Nível 2",
+    "Technical Support Analyst",
+    "IT Support Analyst",
+    "ERP Support Analyst",
+    "Support Analyst",
+    "Support Engineer",
+    "Technical Support Engineer",
+    "IT Support Engineer",
+    "Tier 2 Support",
+    "Level 2 Support",
+    "L2 Support",
+    "N2 Support",
+    "Analista de Suporte Técnico",
+    "Analista de Helpdesk",
+    "Analista de Help Desk",
+    "Analista de Service Desk",
+    "Service Desk Analyst",
+    "Help Desk Analyst",
+    "Analista de Integração de Sistemas",
+    "Analista de Integração",
+    "Integration Analyst",
+    "Systems Integration Analyst",
+    "Analista Fiscal de Sistemas",
+    "Analista de Sistemas Fiscais",
+    "Tax Systems Analyst",
+    "Oracle Support Analyst",
+    "SAP Support Analyst",
+    "Oracle Fusion Support Analyst",
+    "ERP Analyst",
 ]
 
 # Cargo ambíguo: título que também é usado em vaga sem nada a ver com
-# dados/BI (ex: "Business Analyst" e "Analista de Negócios" existem em
-# TI, finanças, RH, operações... qualquer área). Só conta como match se o
-# título TAMBÉM tiver um QUALIFICADORES_DADOS junto — é o que permite ir
-# adicionando cargo adjacente (Product Analyst, CRM Analyst, Marketing
-# Analyst etc.) sem cada um virar fonte de ruído sozinho.
+# suporte técnico/ERP (ex: "Analista de Suporte" existe em suporte
+# comercial, RH, vendas... qualquer área; "Analista Fiscal" existe em
+# contabilidade pura, sem nada de sistemas). Só conta como match se o
+# título TAMBÉM tiver um QUALIFICADORES_DADOS junto.
 KEYWORDS_CARGO_AMBIGUO = [
-    "Business Analyst",
-    "Analista de Negócios",
-    "Business Analytics",
-    "Analista de Performance",
+    "Analista de Suporte",
+    "Suporte",
+    "Analista de Sistemas",
+    "Analista Fiscal",
+    "Functional Analyst",
+    "SAP Analyst",
+    "Oracle Analyst",
+    "IT Analyst",
+    "Consultor SAP",
+    "Consultor Oracle",
+    "SAP Consultant",
+    "Oracle Consultant",
 ]
 
 # Termo que precisa aparecer junto no título quando o cargo é ambíguo, pra
-# confirmar que é vaga de dados/BI e não de outra área qualquer.
+# confirmar que é vaga de suporte técnico/ERP/integração fiscal e não de
+# outra área qualquer. NÃO inclui "suporte"/"support" aqui: como esses
+# termos já são a própria KEYWORDS_CARGO_AMBIGUO, incluí-los aqui tornaria
+# a exigência de qualificador circular (o próprio cargo ambíguo já contém a
+# palavra que deveria confirmá-lo) — "Analista de Suporte" sozinho passaria
+# sempre, o que é exatamente o falso positivo que essa regra existe pra
+# evitar (suporte comercial, suporte a vendas etc.).
 QUALIFICADORES_DADOS = [
-    "dados",
-    "data",
-    "bi",
+    "técnico",
+    "tecnico",
+    "technical",
+    "ti",
+    "it",
+    "sistemas",
+    "systems",
+    "erp",
+    "sap",
+    "oracle",
+    "fiscal",
+    "nf-e",
+    "nfe",
+    "nfs-e",
+    "nfse",
+    "ct-e",
+    "cte",
     "sql",
-    "power bi",
-    "analytics",
-    "kpi",
-    "dashboard",
-    "métricas",
-    "reporting",
-    "insights",
+    "integração",
+    "integracao",
+    "integration",
+    "helpdesk",
+    "help desk",
+    "service desk",
+    "n2",
+    "nível 2",
+    "nivel 2",
+    "level 2",
+    "tier 2",
 ]
 
-# Ferramenta que aparece como núcleo do título ("Analista de Power BI").
-# Só conta como match se o título TAMBÉM tiver uma palavra de cargo — é o
-# espelho da regra de KEYWORDS_CARGO_AMBIGUO: lá o cargo é ambíguo e pede
-# domínio, aqui a ferramenta é ambígua e pede cargo. Sem isso, "Power BI"
-# sozinho aprovaria "Power BI Senior" e "Desenvolvedor (Power BI + Python)",
-# que são vaga de desenvolvimento, não de análise.
+# Ferramenta que aparece como núcleo do título (ex: "Analista SAP",
+# "Consultor Oracle Fusion"). Só conta como match se o título TAMBÉM tiver
+# uma palavra de cargo — evita que "SAP"/"Oracle"/"PL/SQL" sozinho aprove
+# vaga de desenvolvimento pura ("SAP Developer", "PL/SQL Developer"), que
+# não é o perfil buscado (suporte/análise, não programação).
 FERRAMENTAS_TITULO = [
-    "Power BI",
+    "SAP",
+    "Oracle Fusion",
+    "Oracle EBS",
+    "Oracle APEX",
+    "PL/SQL",
 ]
 
-# Palavra de cargo que confirma que a vaga de ferramenta é de análise.
-# "desenvolvedor"/"developer"/"engenheiro" ficam FORA de propósito: é o que
-# mantém vaga de dev fora do radar.
+# Palavra de cargo que confirma que a vaga de ferramenta é de suporte/
+# análise. "desenvolvedor"/"developer"/"engenheiro de software" ficam FORA
+# de propósito: é o que mantém vaga de programação pura fora do radar
+# (perfil é suporte técnico, não desenvolvimento).
 QUALIFICADORES_CARGO = [
     "analista",
     "analyst",
+    "suporte",
+    "support",
     "especialista",
     "specialist",
     "consultor",
@@ -100,109 +142,67 @@ KEYWORDS = KEYWORDS_CARGO_FORTE + KEYWORDS_CARGO_AMBIGUO
 
 # Termos de busca enviados a cada site. Ficam separados das KEYWORDS de
 # propósito: TERMOS_BUSCA é a rede ampla (o que é pesquisado em cada site,
-# incluindo termos de ferramenta/stack pra achar vaga com título atípico),
+# incluindo termo de ferramenta/stack pra achar vaga com título atípico),
 # enquanto KEYWORDS é o filtro final e só olha o título da vaga já
-# encontrada. Um termo de ferramenta (ex: "dax") só resulta em notificação
-# se o TÍTULO da vaga também bater com uma keyword de cargo — isso evita
-# falso positivo de vaga que só cita a ferramenta como diferencial.
+# encontrada.
 #
 # TERMOS_CARGO é derivado direto de KEYWORDS (em vez de mantido à mão em
-# lista separada) — antes as duas listas divergiam: metade das KEYWORDS
-# (ex: "Desenvolvedor BI", "BI Analyst", "Analista de Negócios") nunca era
-# buscada de verdade, só existia como filtro, então só pegava essas vagas
-# por sorte via outro termo. Com a derivação automática isso não pode mais
-# acontecer — toda keyword nova em KEYWORDS já vira busca também.
+# lista separada) — toda keyword nova em KEYWORDS já vira busca também,
+# sem risco de duas listas divergirem.
 TERMOS_CARGO_EXTRA = [
     # termos mais amplos que a keyword exata, mantidos por dar rede mais
     # larga na busca (a keyword em si é mais restrita, de propósito, pra
     # não gerar falso positivo no filtro de título).
-    "power bi",
-    "inteligência de mercado",
+    "suporte n2",
+    "suporte técnico",
+    "technical support",
+    "service desk",
+    "help desk",
+    "erp support",
+    "integração de sistemas",
+    "analista fiscal",
 ]
 
 TERMOS_CARGO = sorted(set(k.lower() for k in KEYWORDS) | set(TERMOS_CARGO_EXTRA))
 
-# MEDIDO em jobradar.log (12 rodízios completos, Gupy+99Jobs+GeekHunter+
-# Solides): "dax" e "power query" nunca resultaram em nenhuma vaga nova
-# notificada nessas 4 fontes — 0 em 48 buscas cada, a maioria vazia
-# ("0 resultados reais") e o resto timeout. "microsoft fabric" teve 1 vaga
-# no log inteiro (363 notificações) com o termo no título, e essa vaga
-# também tinha "Power BI"/"Analista de BI" no título — já seria achada por
-# termo que continua na lista. Timeout: os 3 termos concentraram metade
-# (13 de 26) dos timeouts dessas 4 fontes sendo só 3 dos 42 termos (7%) —
-# confirma o padrão relatado. Removidos por render zero e custarem sessão
-# igual a um termo de cargo.
+# Termos de ferramenta/stack — dá rede mais ampla que só o cargo (vaga com
+# título atípico que cita a stack como diferencial). Um termo de ferramenta
+# só resulta em notificação se o TÍTULO da vaga também bater com uma
+# keyword de cargo (mesma regra de FERRAMENTAS_TITULO acima) — evita falso
+# positivo de vaga que só cita a ferramenta em algum ponto do anúncio.
 TERMOS_FERRAMENTA = [
-    "sql",
-    "python",
-    "tableau",
-    "qlik",
-    "looker",
-    "bigquery",
+    "oracle fusion",
+    "sap erp",
+    "pl/sql",
+    "oracle apex",
+    "nf-e",
+    "nfs-e",
 ]
 
 TERMOS_BUSCA = TERMOS_CARGO + TERMOS_FERRAMENTA
 
-# Medido: os TERMOS_BUSCA inteiros (hoje 42) rodando em TODO ciclo é o que
-# gera as centenas de sessões de navegador por execução — o custo cresce
-# linear com o tamanho da lista, e a lista só cresce (mais ainda com a
-# expansão internacional puxando mais termos no radar). TERMOS_POR_CICLO é
-# o tamanho do BLOCO usado por ciclo, não o total de termos — main.py roda
-# um bloco por vez em rodízio (ver _proximo_bloco_termos) e avança pro
-# próximo bloco no ciclo seguinte, salvando a posição no jobs.db. Isso
-# desacopla custo por ciclo de tamanho da lista: dobrar TERMOS_BUSCA dobra
-# quantos ciclos até cobrir tudo de novo, não o custo de cada ciclo.
+# MEDIDO: os TERMOS_BUSCA inteiros rodando em TODO ciclo é o que gera as
+# centenas de sessões de navegador por execução — o custo cresce linear com
+# o tamanho da lista. TERMOS_POR_CICLO é o tamanho do BLOCO usado por ciclo,
+# não o total de termos — main.py roda um bloco por vez em rodízio (ver
+# _proximo_bloco_termos) e avança pro próximo bloco no ciclo seguinte,
+# salvando a posição no jobs.db. Isso desacopla custo por ciclo de tamanho
+# da lista de termos.
 TERMOS_POR_CICLO = 10
 
-# Onde vaga HIBRIDA ou PRESENCIAL e aceita (mais "Remoto", que nao e
-# cidade e sim a porta de entrada da regra de modalidade remota — ver
-# _FLAGS_REMOTO em job.py). Vaga hibrida/presencial fora desta lista e
-# rejeitada; e uma whitelist, nao uma preferencia de ordenacao.
-#
-# Lista revisada contra o requisito escrito pela usuaria: as seis cidades
-# obrigatorias sao Campina Grande, Joao Pessoa, Recife, Natal, Caruaru e
-# Manaus. Maceio e Aracaju ficam por decisao explicita dela (interessam,
-# mesmo fora do requisito minimo).
-#
-# MEDIDO: a lista anterior era "Nordeste", nao "as cidades que interessam",
-# e divergia do requisito nos dois sentidos ao mesmo tempo:
-#   - FALTAVA Manaus. Confirmado em teste: "Manaus - AM" + Hibrido era
-#     REJEITADA. Nenhuma vaga presencial/hibrida de Manaus podia entrar,
-#     e a busca por cidade do LinkedIn (derivada desta lista) nunca
-#     procurou la.
-#   - SOBRAVAM Jaboatao, Teresina, Sao Luis e Petrolina, que aceitavam
-#     hibrida/presencial fora da regra. Confirmado em teste.
-# Nenhum dos 76 testes existentes cobria essas regras — por isso a
-# divergencia sobreviveu. Agora esta em tests/test_regras_de_negocio.py.
-#
-# Custo: LOCATIONS_LINKEDIN_CIDADES_PRESENCIAL e derivada daqui, entao
-# cada cidade e uma busca a mais por termo no LinkedIn. Sai de 11 cidades
-# para 8 — menos requisicao por ciclo E cobrindo Manaus, que faltava.
+# Perfil aceita QUALQUER cidade, desde que a vaga seja 100% remota — não há
+# whitelist de cidade pra vaga híbrida/presencial. "Remoto" continua na
+# lista porque é a porta de entrada da regra de modalidade remota (ver
+# _FLAGS_REMOTO em job.py) — é o único valor aqui, então toda vaga híbrida/
+# presencial (de qualquer cidade) é rejeitada, e só remoto passa.
 CIDADES = [
     "Remoto",
-    # As seis do requisito
-    "Campina Grande",
-    "João Pessoa",
-    "Recife",
-    "Natal",
-    "Caruaru",
-    "Manaus",
-    # Mantidas por decisao da usuaria, alem do requisito minimo
-    "Maceió",
-    "Aracaju",
 ]
 
-# MEDIDO: "Data Analyst @ Lisboa" e "Analista de Datos @ Madrid" reprovavam
-# na localização, não no cargo — CIDADES acima é whitelist só de cidade
-# brasileira, e a expansão de LOCATIONS_LINKEDIN pra Argentina/Chile (ver
-# abaixo) passou a trazer vaga presencial/híbrida em Portugal/Espanha de
-# vez em quando junto. Lista SEPARADA (não misturada em CIDADES, que
-# continua só-Brasil de propósito — ver decisão registrada na criação do
-# config_intl.py) com toggle próprio, pra dar pra ligar/desligar esse eixo
-# sem mexer no resto do filtro. Canônica aqui porque config_intl.py já
-# importa de config.py (não o contrário) — o pipeline internacional reusa
-# essa mesma lista em vez de manter uma cópia (risco de divergir, mesmo
-# motivo da unificação de _contem_termo/_tem_termo).
+# Não usado neste perfil (CIDADES já cobre "qualquer cidade, desde que
+# remoto" sem precisar de eixo geográfico à parte) — mantido só porque
+# config_intl.py importa este nome. Ver ATIVAR_EIXO_IBERICO_BR abaixo
+# (desligado).
 CIDADES_EUROPA_IBERICA = [
     "Portugal",
     "Lisboa",
@@ -216,136 +216,91 @@ CIDADES_EUROPA_IBERICA = [
     "Valencia",
 ]
 
-# Toggle independente do ATIVAR_EIXO_IBERICO de config_intl.py — são dois
-# eixos diferentes (esse aqui é do pipeline BR/main.py, aquele é do
-# pipeline internacional/main_intl.py), cada um com seu próprio liga/
-# desliga, mesmo compartilhando a mesma lista de cidades acima.
-#
-# DESLIGADO: do mercado internacional, só interessa vaga remota — vaga
-# presencial/híbrida em Lisboa/Madrid (o que esse eixo notifica, marcada
-# "exploratória") não é o que o usuário quer. CIDADES_EUROPA_IBERICA
-# continua definida (não precisa apagar) pra caso o eixo volte a ser
-# ligado depois — só o toggle muda.
+# DESLIGADO: perfil só quer vaga remota, então o eixo "presencial/híbrido
+# na Ibéria, marcado como exploratório" não se aplica — vaga presencial ou
+# híbrida em qualquer lugar (Ibéria incluída) já é rejeitada por CIDADES
+# acima, sem precisar de eixo à parte.
 ATIVAR_EIXO_IBERICO_BR = False
 
 # LinkedInScraper é a única fonte do pipeline BR que também alcança vaga
-# fora do Brasil (as outras são portais brasileiros) — mas até aqui rodava
-# só com location=Brasil fixo no código (scrapers/linkedin.py:88), então
-# essa "porta pra fora" nunca era usada.
+# fora do Brasil — as outras são portais brasileiros.
 #
-# Mercado "casa": busca modalidade completa (presencial/híbrida + remoto),
-# porque o usuário mora aqui e vaga local de verdade interessa.
-LOCATIONS_LINKEDIN = ["Brasil"]
+# Vazio de propósito: como o perfil só quer remoto (nunca híbrido/
+# presencial, nem no Brasil), não faz sentido rodar a passada de "modalidade
+# completa" (que inclui presencial/híbrido) pra nenhum mercado — todo o
+# resultado presencial/híbrido dela seria descartado por CIDADES=["Remoto"]
+# mesmo assim. O Brasil entra em LOCATIONS_LINKEDIN_REMOTO_APENAS abaixo,
+# junto com os outros mercados aceitos, só com a passada f_WT=2 (remoto).
+LOCATIONS_LINKEDIN = []
 
-# Mercados adicionais: só busca REMOTA (f_WT=2) — vaga presencial/híbrida
-# num país onde o usuário não mora não serve, então nem faz sentido gastar
-# a passada nacional ali (era puro desperdício: Argentina/Chile já rodavam
-# as duas passadas antes, mas a nacional nunca batia em CIDADES mesmo,
-# que é só cidade brasileira). Espanhol ou português — mesmo critério do
-# pipeline internacional. Lista reaproveita exatamente os países já usados
-# e testados ao vivo no endpoint do LinkedIn em config_intl.py
-# (LOCATIONS_INTL) — evita arriscar nome de país nunca testado (grafia
-# errada ou região que o LinkedIn não resolve como location de verdade,
-# como já visto com "LATAM"/"Latin America").
-LOCATIONS_LINKEDIN_REMOTO_APENAS = ["Argentina", "Chile", "México", "Colômbia", "Espanha", "Portugal"]
+# Mercados onde só interessa vaga REMOTA (f_WT=2) — Brasil entra aqui (não
+# em LOCATIONS_LINKEDIN) porque só a modalidade remota interessa, mesmo
+# morando aqui. Resto da lista é país de língua portuguesa ou inglesa com
+# volume real de vaga de TI/suporte no LinkedIn — lista enxuta de propósito
+# (cada país aqui multiplica busca × termo); MERCADOS_REMOTO_ACEITOS abaixo
+# é mais abrangente porque aceitar é comparação de string (custo zero),
+# achar exige busca de verdade (custo real).
+LOCATIONS_LINKEDIN_REMOTO_APENAS = [
+    "Brasil",
+    "Portugal",
+    "Estados Unidos",
+    "Reino Unido",
+    "Canadá",
+    "Irlanda",
+    "Austrália",
+]
 
-# MEDIDO: a passada nacional acima (location="Brasil") varre o país inteiro
-# e só sobra o que bate em CIDADES depois do filtro — pra termo concorrido
-# em SP/RJ/MG (a maioria), as 3 páginas (30 resultados) nunca chegam numa
-# vaga de cidade menor do Nordeste, porque o volume dos polos maiores
-# ocupa tudo antes. Testado ao vivo: página 1 de "analista de dados" em
-# Brasil inteiro veio 100% São Paulo/Curitiba/Brasília, nenhuma do
-# Nordeste. Busca ESPECÍFICA por cidade não depende de volume nacional —
-# o próprio location= do LinkedIn já restringe o resultado à cidade, então
-# funciona mesmo quando SP/RJ dominam o termo. "Remoto" (item de CIDADES)
-# não é local de busca de verdade — sai da lista, já coberto pela passada
-# remoto=True de LOCATIONS_LINKEDIN acima.
+# Não usado neste perfil (LOCATIONS_LINKEDIN vazio, então a derivação abaixo
+# também fica vazia) — mantido pelo mesmo motivo de compatibilidade que
+# CIDADES_EUROPA_IBERICA.
 LOCATIONS_LINKEDIN_CIDADES_PRESENCIAL = [c for c in CIDADES if c != "Remoto"]
 
 # Mercado que a vaga remota precisa aceitar pra contar, quando o texto de
 # local DECLARA um escopo geográfico ("Remote — US only", "Remote — India").
 # Ver Job.escopo_remoto/RegrasFiltro.mercados_remoto_aceitos em job.py — sem
 # isso, uma vaga remota só pra outro país passava igual a uma remota de
-# verdade pro Brasil. Vaga remota SEM escopo declarado no texto (a grande
-# maioria) continua batendo normalmente, isso só filtra quando a fonte
-# EXPLICITA um mercado incompatível.
+# verdade pro candidato. Vaga remota SEM escopo declarado no texto (a
+# grande maioria) continua batendo normalmente, isso só filtra quando a
+# fonte EXPLICITA um mercado incompatível.
 #
-# MEDIDO: Argentina/Chile/México/Colômbia ENTRAM nominalmente agora — a
-# suposição de que "LATAM" cobria os quatro como guarda-chuva só valia
-# enquanto extrair_escopo_remoto resolvia o texto pra "LATAM" literal.
-# Depois que passou a reconhecer cidade (Buenos Aires/Santiago/Cidade do
-# México/Bogotá — ver _CIDADES_MERCADO em job.py), o escopo passou a
-# resolver pro PAÍS específico, não mais pro guarda-chuva — e o país
-# específico nunca esteve nessa lista. Resultado: LOCATIONS_LINKEDIN_
-# REMOTO_APENAS pagava o custo de buscar nesses 4 países e o filtro
-# descartava tudo que a busca trazia de lá. "LATAM" continua na lista pra
-# quando o texto disser isso literalmente (guarda-chuva de verdade, não
-# substituto de nome de país). Portugal e Espanha entraram nominalmente
-# pelo mesmo motivo, desde antes.
-MERCADOS_REMOTO_ACEITOS = ["Brasil", "LATAM", "Argentina", "Chile", "México", "Colômbia", "Portugal", "Espanha"]
+# Cobre os dois eixos do requisito ("qualquer país que fale português ou
+# inglês"): Lusofonia com job market relevante (Brasil, Portugal, Angola,
+# Moçambique, Cabo Verde) + Anglosfera (Estados Unidos, Reino Unido,
+# Canadá, Irlanda, Austrália, Nova Zelândia, África do Sul) — todos já
+# mapeados em _MERCADOS_REMOTO (job.py).
+MERCADOS_REMOTO_ACEITOS = [
+    "Brasil",
+    "Portugal",
+    "Angola",
+    "Moçambique",
+    "Cabo Verde",
+    "Estados Unidos",
+    "Reino Unido",
+    "Canadá",
+    "Irlanda",
+    "Austrália",
+    "Nova Zelândia",
+    "África do Sul",
+]
 
 INTERVALO_MINUTOS = int(os.getenv("INTERVALO_MINUTOS", 180))
 
-# Digest ranqueado (item 08): vaga com Job.pontuar_relevancia() >= este
-# limiar notifica na hora (como sempre foi); abaixo disso, fica na fila do
-# digest diário — ver _enviar_digest_diario em main.py.
-#
-# MEDIDO: rodei o score contra as ~305 vagas do jobs.db real que ainda
-# batem as regras atuais. Distribuição: score 4 (2%), 5 (24%), 6 (67%),
-# 7 (5%), 8 (2%) — nada em 9-10 na amostra (exige acertar praticamente
-# todo sinal ao mesmo tempo: cargo forte + ferramenta + senioridade alvo +
-# mercado confirmado). Limiar 7 deixa ~7% imediata e ~93% no digest — bate
-# com o pedido ("vaga de score alto na hora, resto agrupado"); 6 deixava
-# 74% imediata (pouca redução de ruído); 8 deixava só 2% (digest com
-# praticamente tudo, quase nenhuma vaga "excelente" se destacando na hora).
+# Digest ranqueado: vaga com Job.pontuar_relevancia() >= este limiar
+# notifica na hora; abaixo disso, fica na fila do digest diário — ver
+# _enviar_digest_diario em main.py.
 LIMIAR_DIGEST_IMEDIATO = 7
 
 # Hora UTC a partir da qual o digest diário pode sair (uma vez por perfil,
-# por dia — ver _enviar_digest_diario em main.py). A regra é "ainda não
-# enviei hoje E já passou desta hora", então o digest sai no PRIMEIRO ciclo
-# do dia UTC que TERMINAR depois dela — não numa janela exata de 1 hora,
-# que era o que impedia o disparo de acontecer (o ciclo dura ~80 min e
-# nunca terminava dentro da janela).
-#
-# 9 UTC: o ciclo que começa às 09:00 UTC termina por volta das 10:20 UTC =
-# 07:20 em Brasília (UTC-3). Escolhido pela usuária: chega de manhã, com a
-# lista do dia anterior pronta pra revisar, em vez de de madrugada.
-#
-# Era 0 (= ~22h20 de Brasília), mas esse valor nunca foi uma escolha de
-# verdade — ficou assim desde que o recurso foi escrito e nunca chegou a
-# funcionar, então nunca houve como perceber que horário dava na prática.
-#
-# Se o ciclo das 09:00 falhar num dia, o das 12:00 (13:20 UTC) manda — a
-# regra é "já passou de 9", não "é exatamente 9", então qualquer ciclo
-# seguinte do mesmo dia UTC serve de recuperação.
+# por dia — ver _enviar_digest_diario em main.py). 9 UTC = ~06h em
+# Brasília (UTC-3) / ~07h no horário de Portugal (UTC+1 no horário de
+# verão) — chega de manhã, com a lista do dia anterior pronta pra revisar.
 DIGEST_HORA_UTC = 9
 
 TELEGRAM_BOT_TOKEN = os.getenv("TELEGRAM_BOT_TOKEN", "")
 TELEGRAM_CHAT_ID = os.getenv("TELEGRAM_CHAT_ID", "")
 
-# Caminho ancorado na RAIZ do projeto, não na pasta deste arquivo.
-#
-# MEDIDO: o commit b8227b0 ("Reorganiza raiz: ... -> core/") moveu este
-# config.py da raiz pra core/. Como DB_PATH era relativo a __file__, o
-# banco se mudou junto, em silêncio: data/jobs.db virou core/data/jobs.db.
-# Efeito real, confirmado em disco e no jobradar.log:
-#   - data/jobs.db (1.080 vagas, versionado) ficou órfão;
-#   - core/data/jobs.db nasceu vazio, então iniciar_db() passou a abortar
-#     por BancoVazioSuspeito em toda execução local;
-#   - no GitHub Actions a pasta core/data/ não existe no repositório, então
-#     o banco era recriado do zero a cada run — toda vaga virava "nova"
-#     (renotificação a cada 3h), o rodízio de termos travava no offset 0
-#     (só os 10 primeiros de 44 termos eram buscados), a fila do digest era
-#     descartada e o heartbeat saía a cada ciclo em vez de 1x/dia;
-#   - o passo "git add data/jobs.db" do workflow não via mudança nenhuma
-#     ("Nada novo pra commitar"), então o estado nunca mais persistiu.
-#
-# _RAIZ_PROJETO sobe um nível a partir de core/, então o caminho deixa de
-# depender de onde este arquivo mora — mover config.py de novo não move
-# mais o banco junto. Coberto por tests/test_db_path.py, pra uma
-# reorganização futura quebrar o teste em vez da produção.
-#
-# JOBRADAR_DB_PATH existe pra apontar um banco descartável em teste/
-# experimento sem risco de escrever no banco real.
+# Caminho ancorado na RAIZ do projeto, não na pasta deste arquivo — ver
+# tests/test_db_path.py. JOBRADAR_DB_PATH existe pra apontar um banco
+# descartável em teste/experimento sem risco de escrever no banco real.
 _RAIZ_PROJETO = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 DB_PATH = os.getenv("JOBRADAR_DB_PATH") or os.path.join(_RAIZ_PROJETO, "data", "jobs.db")
