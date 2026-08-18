@@ -48,6 +48,11 @@ def cenario(monkeypatch):
     monkeypatch.setattr(main, "obter_metadado", lambda c: estado["metadados"].get(c))
     monkeypatch.setattr(main, "definir_metadado", lambda c, v: estado["metadados"].__setitem__(c, v))
     monkeypatch.setattr(main, "marcar_digest_enviado", lambda p: estado["marcou_enviado"].append(p))
+    # Fixa a hora nos testes de LOGICA pra eles nao quebrarem quando o
+    # valor real de DIGEST_HORA_UTC mudar (o horario de entrega e escolha
+    # da usuaria, nao regra do codigo). O valor real tem teste proprio, no
+    # fim do arquivo.
+    monkeypatch.setattr(main, "DIGEST_HORA_UTC", 0)
     monkeypatch.setattr(main, "obter_vagas_pendentes_digest",
                         lambda p: [("Analista de Dados", "Empresa", "https://x/1", 6, 0)])
     return estado
@@ -122,3 +127,21 @@ def test_respeita_hora_configurada_quando_nao_e_zero(cenario, monkeypatch):
     assert cenario["enviadas"] == []
     _rodar(monkeypatch, hora_utc=22)
     assert len(cenario["enviadas"]) == 1
+
+
+def test_hora_configurada_entrega_de_manha_e_nao_de_madrugada(cenario, monkeypatch):
+    """Usa o valor REAL de DIGEST_HORA_UTC, nao um fixado no teste.
+
+    A escolha da usuaria foi receber de manha. Com cron de 3 em 3 horas e
+    ciclo de ~80 min, isso quer dizer: ciclo terminando ~04h UTC (01h da
+    madrugada em Brasilia) NAO manda; ciclo terminando ~10h UTC (07h20 em
+    Brasilia) manda."""
+    from core.config import DIGEST_HORA_UTC
+
+    monkeypatch.setattr(main, "DIGEST_HORA_UTC", DIGEST_HORA_UTC)
+
+    _rodar(monkeypatch, hora_utc=4)   # 01h da manha em Brasilia
+    assert cenario["enviadas"] == [], "digest nao pode chegar de madrugada"
+
+    _rodar(monkeypatch, hora_utc=10)  # 07h20 da manha em Brasilia
+    assert len(cenario["enviadas"]) == 1, "digest tem que chegar de manha"
